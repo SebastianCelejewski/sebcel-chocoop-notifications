@@ -1,0 +1,32 @@
+{
+  "name": "sebcel-chocoop-notifications",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.161",
+    "@types/node": "^22.19.18",
+    "adm-zip": "^0.5.17",
+    "esbuild": "^0.25.12",
+    "typescript": "^5.9.3"
+  },
+  "description": "```md id=\"notif-readme\"\r # sebcel-chocoop-notifications",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SebastianCelejewski/sebcel-chocoop-notifications.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SebastianCelejewski/sebcel-chocoop-notifications/issues"
+  },
+  "homepage": "https://github.com/SebastianCelejewski/sebcel-chocoop-notifications#readme"
+}
