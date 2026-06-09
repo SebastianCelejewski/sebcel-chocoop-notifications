@@ -9,6 +9,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.161",
     "@types/node": "^22.19.18",
+    "@types/nodemailer": "^8.0.0",
     "adm-zip": "^0.5.17",
     "esbuild": "^0.25.12",
     "typescript": "^5.9.3"
@@ -28,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/SebastianCelejewski/sebcel-chocoop-notifications/issues"
   },
-  "homepage": "https://github.com/SebastianCelejewski/sebcel-chocoop-notifications#readme"
+  "homepage": "https://github.com/SebastianCelejewski/sebcel-chocoop-notifications#readme",
+  "dependencies": {
+    "nodemailer": "^8.0.10"
+  }
 }

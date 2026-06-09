@@ -9,7 +9,8 @@ await esbuild.build({
     platform: "node",
     target: "node20",
     outfile: "build/notifications-handler.js",
-    sourcemap: true
+    sourcemap: true,
+    external: ["@aws-sdk/*"],  // AWS SDK is provided by the Lambda runtime
 });
 
 const zip = new AdmZip();
