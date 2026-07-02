@@ -24,21 +24,108 @@ interface EventBridgeEvent {
 
 interface WorkRequestCreatedDetail {
     workRequestId: string;
+    createdByName: string;
     type: string;
-    exp: number;
-    urgency: string;
+    exp: string;
+    urgencyDescription: string;
 }
 
-function buildEmailForWorkRequestCreated(detail: WorkRequestCreatedDetail, baseUrl: string): { subject: string; body: string } {
+interface WorkRequestCompletedDetail {
+    workRequestId: string;
+    completedByName: string;
+    type: string;
+    exp: string;
+    date: string;
+}
+
+interface ReactionAddedDetail {
+    activityId: string;
+    activityType: string;
+    activityUserName: string;
+    reactionUserName: string;
+    reaction: string;
+}
+
+interface ActivityReminderNeededDetail {
+    userEmail: string;
+    userName: string;
+    date: string;
+}
+
+interface Email {
+    subject: string;
+    body: string;
+    recipient?: string;
+}
+
+function buildWorkRequestCreatedEmail(detail: WorkRequestCreatedDetail, baseUrl: string): Email {
     return {
-        subject: "Chores Cooperative - utworzono nowe zlecenie",
+        subject: `Chores Cooperative - ${detail.type} do wykonania ${detail.urgencyDescription.charAt(0).toLowerCase()}${detail.urgencyDescription.slice(1)} za ${detail.exp} exp`,
         body: [
+            `${detail.createdByName} dodał(a) nowe zlecenie.`,
+            "",
             `Typ zadania: ${detail.type}`,
             `Punkty doświadczenia do zdobycia: ${detail.exp}`,
-            `Do wykonania: ${detail.urgency}`,
+            `Do wykonania: ${detail.urgencyDescription}`,
             `Link: https://${baseUrl}/WorkRequestDetails/${detail.workRequestId}`,
         ].join("\n"),
     };
+}
+
+function buildWorkRequestCompletedEmail(detail: WorkRequestCompletedDetail, baseUrl: string): Email {
+    return {
+        subject: `Chores Cooperative - ${detail.completedByName} wykonał zlecenie na ${detail.type} za ${detail.exp} exp`,
+        body: [
+            `${detail.completedByName} wykonał(a) zlecenie.`,
+            "",
+            `Typ zadania: ${detail.type}`,
+            `Zdobyte punkty doświadczenia: ${detail.exp}`,
+            `Data: ${detail.date}`,
+            `Link: https://${baseUrl}/WorkRequestDetails/${detail.workRequestId}`,
+        ].join("\n"),
+    };
+}
+
+function buildReactionAddedEmail(detail: ReactionAddedDetail, baseUrl: string): Email {
+    return {
+        subject: `Chores Cooperative - ${detail.activityUserName} otrzymuje ${detail.reaction} za ${detail.activityType} od ${detail.reactionUserName}`,
+        body: [
+            `${detail.reactionUserName} zareagował(a) ${detail.reaction} na aktywność użytkownika ${detail.activityUserName}.`,
+            "",
+            `Typ aktywności: ${detail.activityType}`,
+            `Link: https://${baseUrl}/ActivityDetails/${detail.activityId}`,
+        ].join("\n"),
+    };
+}
+
+function buildActivityReminderNeededEmail(detail: ActivityReminderNeededDetail, baseUrl: string): Email {
+    return {
+        subject: `Chores Cooperative - nie masz dzisiaj jeszcze zarejestrowanych żadnych zasług`,
+        body: [
+            `Cześć ${detail.userName}!`,
+            "",
+            `Nie zarejestrowałeś/aś jeszcze żadnej aktywności dzisiaj (${detail.date}).`,
+            `Zaloguj aktywność, żeby nie stracić punktów!`,
+            "",
+            `Link: https://${baseUrl}`,
+        ].join("\n"),
+        recipient: detail.userEmail,
+    };
+}
+
+function buildEmail(detailType: string, detail: Record<string, unknown>, baseUrl: string): Email | null {
+    switch (detailType) {
+        case "WorkRequestCreated":
+            return buildWorkRequestCreatedEmail(detail as WorkRequestCreatedDetail, baseUrl);
+        case "WorkRequestCompleted":
+            return buildWorkRequestCompletedEmail(detail as WorkRequestCompletedDetail, baseUrl);
+        case "ReactionAdded":
+            return buildReactionAddedEmail(detail as ReactionAddedDetail, baseUrl);
+        case "ActivityReminderNeeded":
+            return buildActivityReminderNeededEmail(detail as ActivityReminderNeededDetail, baseUrl);
+        default:
+            return null;
+    }
 }
 
 export const handler = async (event: unknown): Promise<void> => {
@@ -57,19 +144,17 @@ export const handler = async (event: unknown): Promise<void> => {
         return;
     }
 
-    const recipients = recipientsRaw.split(",").map(r => r.trim()).filter(Boolean);
-
     const e = event as EventBridgeEvent;
+    const email = buildEmail(e["detail-type"], e.detail, baseUrl);
 
-    if (e["detail-type"] !== "WorkRequestCreated") {
+    if (!email) {
         console.log(`Ignoring unsupported event type: ${e["detail-type"]}`);
         return;
     }
 
-    const { subject, body } = buildEmailForWorkRequestCreated(
-        e.detail as WorkRequestCreatedDetail,
-        baseUrl,
-    );
+    const recipients = email.recipient
+        ? [email.recipient]
+        : recipientsRaw.split(",").map(r => r.trim()).filter(Boolean);
 
     const { username, password } = await getSmtpCredentials(env);
 
@@ -83,8 +168,8 @@ export const handler = async (event: unknown): Promise<void> => {
     await transporter.sendMail({
         from: smtpFrom,
         to: recipients.join(", "),
-        subject,
-        text: body,
+        subject: email.subject,
+        text: email.body,
     });
 
     console.log(`Email sent to ${recipients.join(", ")}`);
