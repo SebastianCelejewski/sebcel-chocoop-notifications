@@ -31,3 +31,9 @@ variable "base_url" {
   type        = string
   description = "Frontend base URL used to build deep links in notification emails"
 }
+
+variable "notifications_enabled" {
+  type        = bool
+  description = "Global toggle — set to false to disable all email notifications"
+  default     = true
+}

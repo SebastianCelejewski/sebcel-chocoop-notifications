@@ -8,4 +8,5 @@ module "notifications" {
   smtp_port               = 587
   smtp_from               = "Sebastian.Celejewski@wp.pl"
   base_url                = "uat.drmf9v4p6jnv3.amplifyapp.com"
+  notifications_enabled   = false
 }

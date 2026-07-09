@@ -66,6 +66,7 @@ resource "aws_lambda_function" "notifications" {
       SMTP_PORT               = tostring(var.smtp_port)
       SMTP_FROM               = var.smtp_from
       BASE_URL                = var.base_url
+      NOTIFICATIONS_ENABLED   = tostring(var.notifications_enabled)
     }
   }
 

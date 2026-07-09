@@ -132,6 +132,13 @@ export const handler = async (event: unknown): Promise<void> => {
     console.log("Received event");
     console.log(JSON.stringify(event, null, 2));
 
+    const notificationsEnabled = process.env.NOTIFICATIONS_ENABLED !== "false";
+
+    if (!notificationsEnabled) {
+        console.log("Notifications are disabled. Skipping.");
+        return;
+    }
+
     const env = process.env.ENVIRONMENT ?? "";
     const recipientsRaw = process.env.NOTIFICATION_RECIPIENTS ?? "";
     const smtpHost = process.env.SMTP_HOST ?? "";

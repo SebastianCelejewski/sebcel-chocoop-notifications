@@ -8,4 +8,5 @@ module "notifications" {
   smtp_port               = 587
   smtp_from               = "Sebastian.Celejewski@wp.pl"
   base_url                = "chocoop.pl"
+  notifications_enabled   = true
 }

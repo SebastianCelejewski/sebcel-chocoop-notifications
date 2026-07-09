@@ -8,4 +8,5 @@ module "notifications" {
   smtp_port               = 587
   smtp_from               = "Sebastian.Celejewski@wp.pl"
   base_url                = "localhost:5173"
+  notifications_enabled   = false
 }

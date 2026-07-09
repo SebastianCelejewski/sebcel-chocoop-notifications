@@ -14,4 +14,5 @@ module "notifications_service" {
   smtp_port               = var.smtp_port
   smtp_from               = var.smtp_from
   base_url                = var.base_url
+  notifications_enabled   = var.notifications_enabled
 }
