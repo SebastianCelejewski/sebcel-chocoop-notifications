@@ -37,3 +37,14 @@ variable "notifications_enabled" {
   description = "Global toggle — set to false to disable all email notifications"
   default     = true
 }
+
+variable "cognito_user_pool_id" {
+  type        = string
+  description = "Cognito User Pool ID — used by the preferences API to verify ID tokens"
+}
+
+variable "cognito_client_id" {
+  type        = string
+  description = "Cognito App Client ID — used by the preferences API to verify ID tokens"
+}
+

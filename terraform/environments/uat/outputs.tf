@@ -1,4 +1,4 @@
 output "preferences_api_url" {
   description = "Function URL of the preferences API Lambda"
-  value       = aws_lambda_function_url.notifications_api.function_url
+  value       = module.notifications.preferences_api_url
 }

@@ -56,4 +56,11 @@ terraform -chdir=terraform/environments/$ENVIRONMENT init
 terraform -chdir=terraform/environments/$ENVIRONMENT apply
 
 echo
+echo "========================================"
+echo "Outputs"
+echo "========================================"
+
+terraform -chdir=terraform/environments/$ENVIRONMENT output
+
+echo
 echo "Deployment finished successfully"

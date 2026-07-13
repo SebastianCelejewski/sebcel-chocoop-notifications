@@ -15,4 +15,6 @@ module "notifications_service" {
   smtp_from               = var.smtp_from
   base_url                = var.base_url
   notifications_enabled   = var.notifications_enabled
+  cognito_user_pool_id    = var.cognito_user_pool_id
+  cognito_client_id       = var.cognito_client_id
 }
