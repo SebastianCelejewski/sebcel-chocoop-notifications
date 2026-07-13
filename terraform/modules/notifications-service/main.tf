@@ -102,9 +102,8 @@ resource "aws_lambda_function" "notifications" {
 
   environment {
     variables = {
-      ENVIRONMENT             = var.environment
-      NOTIFICATION_RECIPIENTS = var.notification_recipients
-      SMTP_HOST               = var.smtp_host
+      ENVIRONMENT           = var.environment
+      SMTP_HOST             = var.smtp_host
       SMTP_PORT               = tostring(var.smtp_port)
       SMTP_FROM               = var.smtp_from
       BASE_URL                = var.base_url

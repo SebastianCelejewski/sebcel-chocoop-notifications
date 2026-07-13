@@ -18,11 +18,6 @@ variable "event_bus_name" {
   type = string
 }
 
-variable "notification_recipients" {
-  type        = string
-  description = "Comma-separated list of email addresses to notify"
-}
-
 variable "smtp_host" {
   type        = string
   description = "SMTP server hostname"

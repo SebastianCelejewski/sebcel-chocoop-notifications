@@ -45,8 +45,7 @@ export const handler = async (event: unknown): Promise<void> => {
         return;
     }
 
-    const fallbackRecipients = (process.env.NOTIFICATION_RECIPIENTS ?? "").split(",").map(r => r.trim()).filter(Boolean);
-    const recipients = await resolveRecipients(email, tableName, fallbackRecipients);
+    const recipients = await resolveRecipients(email, tableName);
 
     if (recipients.length === 0) {
         console.log("No recipients to send to. Skipping.");
