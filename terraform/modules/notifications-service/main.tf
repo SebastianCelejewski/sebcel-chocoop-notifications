@@ -256,7 +256,7 @@ resource "aws_lambda_function_url" "notifications_api" {
     allow_credentials = true
     allow_origins     = ["https://${var.base_url}", "http://localhost:5173"]
     allow_methods     = ["GET", "PUT"]
-    allow_headers     = ["Authorization", "Content-Type"]
+    allow_headers     = ["authorization", "content-type"]
     max_age           = 3600
   }
 }

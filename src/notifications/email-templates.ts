@@ -1,4 +1,4 @@
-export type EmailPrefKey = "activityReminder" | "workRequestCreated" | "workRequestCompleted" | "reactionAdded";
+export type EmailPrefKey = "activityReminder" | "workRequestCreated" | "workRequestCompleted" | "reactionAdded" | "activityCreated";
 
 export interface Email {
     subject: string;
@@ -30,6 +30,14 @@ interface ReactionAddedDetail {
     activityUserName: string;
     reactionUserName: string;
     reaction: string;
+}
+
+interface ActivityCreatedDetail {
+    activityId: string;
+    createdByName: string;
+    type: string;
+    exp: string;
+    date: string;
 }
 
 interface ActivityReminderNeededDetail {
@@ -80,6 +88,21 @@ export function buildEmail(detailType: string, detail: Record<string, unknown>, 
                     `${d.reactionUserName} zareagował(a) ${d.reaction} na aktywność użytkownika ${d.activityUserName}.`,
                     "",
                     `Typ aktywności: ${d.activityType}`,
+                    `Link: https://${baseUrl}/ActivityDetails/${d.activityId}`,
+                ].join("\n"),
+            };
+        }
+        case "ActivityCreated": {
+            const d = detail as ActivityCreatedDetail;
+            return {
+                prefKey: "activityCreated",
+                subject: `Chores Cooperative - ${d.createdByName} zdobył(a) ${d.exp} exp za ${d.type}`,
+                body: [
+                    `${d.createdByName} zarejestrował(a) nową czynność.`,
+                    "",
+                    `Typ czynności: ${d.type}`,
+                    `Zdobyte punkty doświadczenia: ${d.exp}`,
+                    `Data: ${d.date}`,
                     `Link: https://${baseUrl}/ActivityDetails/${d.activityId}`,
                 ].join("\n"),
             };
