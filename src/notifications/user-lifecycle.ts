@@ -3,15 +3,15 @@ import { DynamoDBDocumentClient, PutCommand, UpdateCommand, DeleteCommand } from
 
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-export interface UserCreatedDetail { userId: string; email: string; nick: string; }
-export interface UserUpdatedDetail { userId: string; email: string; nick: string; }
+export interface UserCreatedDetail { userId: string; email: string; nickname: string; }
+export interface UserUpdatedDetail { userId: string; email: string; nickname: string; }
 export interface UserDeletedDetail { userId: string; }
 
 export async function handleUserCreated(detail: UserCreatedDetail, tableName: string): Promise<void> {
     try {
         await ddb.send(new PutCommand({
             TableName: tableName,
-            Item: { userId: detail.userId, email: detail.email, nick: detail.nick },
+            Item: { userId: detail.userId, email: detail.email, nickname: detail.nickname },
             ConditionExpression: "attribute_not_exists(userId)",
         }));
         console.log(`User created: ${detail.userId}`);
@@ -25,9 +25,9 @@ export async function handleUserUpdated(detail: UserUpdatedDetail, tableName: st
     await ddb.send(new UpdateCommand({
         TableName: tableName,
         Key: { userId: detail.userId },
-        UpdateExpression: "SET #email = :email, nick = :nick",
+        UpdateExpression: "SET #email = :email, nickname = :nickname",
         ExpressionAttributeNames: { "#email": "email" },
-        ExpressionAttributeValues: { ":email": detail.email, ":nick": detail.nick },
+        ExpressionAttributeValues: { ":email": detail.email, ":nickname": detail.nickname },
     }));
     console.log(`User updated: ${detail.userId}`);
 }

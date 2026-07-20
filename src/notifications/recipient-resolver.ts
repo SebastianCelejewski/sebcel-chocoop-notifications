@@ -6,7 +6,11 @@ const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export async function resolveRecipients(email: Email, tableName: string): Promise<string[]> {
     if (email.recipient) {
-        if (email.targetUserId && tableName) {
+        if (!tableName) {
+            console.error("USERS_TABLE_NAME is not set — cannot check user preferences, skipping email");
+            return [];
+        }
+        if (email.targetUserId) {
             const result = await ddb.send(new GetCommand({
                 TableName: tableName,
                 Key: { userId: email.targetUserId },

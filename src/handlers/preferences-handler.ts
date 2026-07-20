@@ -43,7 +43,10 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
     }
 
     if (method === "PUT") {
-        const prefs = JSON.parse(event.body ?? "{}");
+        if (!event.body) {
+            return respond(400, { error: "Request body is required" });
+        }
+        const prefs = JSON.parse(event.body);
         await savePreferences(tableName, userId, prefs);
         return respond(200, { ok: true });
     }
