@@ -1,4 +1,4 @@
-export type EmailPrefKey = "activityReminder" | "workRequestCreated" | "workRequestCompleted" | "reactionAdded" | "activityCreated";
+export type { EmailPrefKey } from "./notification-constants.js";
 
 export interface Email {
     subject: string;

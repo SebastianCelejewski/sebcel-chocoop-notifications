@@ -242,10 +242,11 @@ resource "aws_lambda_permission" "allow_function_url_public" {
 }
 
 resource "aws_lambda_permission" "allow_invoke_public" {
-  statement_id  = "AllowPublicInvoke"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.notifications_api.function_name
-  principal     = "*"
+  statement_id             = "AllowPublicInvoke"
+  action                   = "lambda:InvokeFunction"
+  function_name            = aws_lambda_function.notifications_api.function_name
+  principal                = "*"
+  invoked_via_function_url = true
 }
 
 resource "aws_lambda_function_url" "notifications_api" {

@@ -1,8 +1,6 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import type { Email } from "./email-templates.js";
-
-const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+import { ddb } from "./ddb.js";
 
 export async function resolveRecipients(email: Email, tableName: string): Promise<string[]> {
     if (email.recipient) {

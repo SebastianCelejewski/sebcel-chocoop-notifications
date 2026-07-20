@@ -38,17 +38,6 @@ echo "Building TypeScript..."
 npm run build
 
 echo
-echo "Creating deployment package..."
-
-rm -f notifications-handler.zip
-
-cd build
-
-zip -r notifications-handler.zip . -x notifications-handler.zip
-
-cd ..
-
-echo
 echo "Running Terraform..."
 
 terraform -chdir=terraform/environments/$ENVIRONMENT init

@@ -40,3 +40,5 @@ export const DEFAULT_PREFS = {
         reactionAdded: true,
     },
 };
+
+export type EmailPrefKey = keyof typeof DEFAULT_PREFS.email;

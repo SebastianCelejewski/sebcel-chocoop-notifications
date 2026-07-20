@@ -3,7 +3,7 @@ import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
 
-import { DEFAULT_PREFS, NOTIFICATION_TYPES } from "./notification-constants";
+import { DEFAULT_PREFS, NOTIFICATION_TYPES } from "../notifications/notification-constants.js";
 
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
@@ -47,6 +47,10 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
             return respond(400, { error: "Request body is required" });
         }
         const prefs = JSON.parse(event.body);
+        const validationError = validatePrefs(prefs);
+        if (validationError) {
+            return respond(400, { error: validationError });
+        }
         await savePreferences(tableName, userId, prefs);
         return respond(200, { ok: true });
     }
@@ -85,6 +89,19 @@ function respond(statusCode: number, body: unknown): APIGatewayProxyResultV2 {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
     };
+}
+
+const VALID_PREF_KEYS = new Set(Object.keys(DEFAULT_PREFS.email));
+
+function validatePrefs(prefs: unknown): string | null {
+    if (typeof prefs !== "object" || prefs === null) return "prefs must be an object";
+    const email = (prefs as Record<string, unknown>).email;
+    if (typeof email !== "object" || email === null) return "prefs.email must be an object";
+    for (const [key, value] of Object.entries(email as Record<string, unknown>)) {
+        if (!VALID_PREF_KEYS.has(key)) return `Unknown preference key: ${key}`;
+        if (typeof value !== "boolean") return `Value for ${key} must be a boolean`;
+    }
+    return null;
 }
 
 async function loadPreferences(tableName: string, userId: string): Promise<unknown> {

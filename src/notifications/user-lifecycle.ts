@@ -1,7 +1,5 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, UpdateCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-
-const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+import { PutCommand, UpdateCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { ddb } from "./ddb.js";
 
 export interface UserCreatedDetail { userId: string; email: string; nickname: string; }
 export interface UserUpdatedDetail { userId: string; email: string; nickname: string; }
